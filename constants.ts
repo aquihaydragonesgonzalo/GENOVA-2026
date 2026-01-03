@@ -59,6 +59,19 @@ export const ROMAN_WALK_TRACK: [number, number][] = [
 
 export const INITIAL_ITINERARY: Activity[] = [
   {
+    id: 'arrival_port',
+    title: 'LLEGADA A PUERTO',
+    startTime: '08:00',
+    endTime: '08:00',
+    locationName: 'Puerto de Génova',
+    coords: { lat: 44.415087, lng: 8.919319 },
+    description: 'Atraco del crucero en la terminal de pasajeros de Génova.',
+    keyDetails: 'Hora estimada de atraque. Desembarque según turnos asignados.',
+    priceEUR: 0,
+    type: 'transport',
+    completed: false
+  },
+  {
     id: '01',
     title: 'Terminal de Cruceros - Inicio',
     startTime: '10:00',
