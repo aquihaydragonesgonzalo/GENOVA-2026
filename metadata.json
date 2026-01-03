@@ -1,0 +1,7 @@
+{
+  "name": "Guía GÉNOVA 2026",
+  "description": "Tu asistente personal para la escala en Génova el 14 de Abril de 2026. Itinerario detallado, mapa con track real por los caruggi y control de gastos.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

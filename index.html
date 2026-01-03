@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Génova 2026 | Guía PWA</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Génova 2026">
+    <meta name="description" content="Guía personalizada para la escala en Génova 2026">
+    
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjMqIMsVcH4cJyBPns11EXgA9GU2G_GIKn8VZZ1xZdjE0YcbKxgP9RubrKKajMFpYoXOkkaRozSncgrDKTpgqR8rEJaRg6EabSfiifPpqA2YjgZ-n1MJgFjRgbM8XFMjRfU67P3XOM3gg6fOi-ffux-i08-BgUE69iuYzbNX-eeqrjQhI6LWK9lBvwSTno/s320/ROMA%20TRAVEL.jpg">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        genova: { 
+                          50: '#eff6ff', 
+                          100: '#dbeafe', 
+                          200: '#bfdbfe', 
+                          300: '#93c5fd', 
+                          400: '#60a5fa', 
+                          500: '#3b82f6', 
+                          600: '#2563eb', 
+                          700: '#1d4ed8', 
+                          800: '#1e40af', 
+                          900: '#1e3a8a' 
+                        },
+                        superba: {
+                          gold: '#D97706',
+                          red: '#BE123C',
+                          blue: '#1E3A8A'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        html, body { height: 100%; width: 100%; margin: 0; padding: 0; overscroll-behavior-y: none; background-color: #f8fafc; }
+        body { font-family: 'Roboto Condensed', sans-serif; -webkit-tap-highlight-color: transparent; }
+        #root { height: 100%; width: 100%; display: flex; flex-direction: column; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .custom-h-scrollbar::-webkit-scrollbar { height: 6px; }
+        .custom-h-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .custom-h-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .leaflet-bottom { bottom: 85px !important; }
+        
+        #initial-loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #1e3a8a; display: flex; align-items: center; justify-content: center;
+            z-index: 9999; transition: opacity 0.4s ease-out;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "lucide-react": "https://esm.sh/lucide-react@0.460.0?external=react",
+    "recharts": "https://esm.sh/recharts@2.13.0?external=react",
+    "leaflet": "https://esm.sh/leaflet@1.9.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="initial-loader">
+        <div style="text-align: center; color: white;">
+            <div style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 15px;"></div>
+            <p style="font-weight: bold; letter-spacing: 1.5px; font-size: 11px; text-transform: uppercase; opacity: 0.8;">Iniciando Guía Génova</p>
+        </div>
+    </div>
+
+    <div id="root"></div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script type="text/babel" data-type="module">
+        import React, { useState, useEffect, useMemo, useRef } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { 
+            CalendarClock, Map as MapIcon, Wallet, BookOpen, Anchor, 
+            Headphones, X, Play, Square, Navigation, CheckCircle2, 
+            Circle, MapPin, AlertTriangle, Clock, ExternalLink, AlertCircle,
+            Volume2, Languages, PhoneCall, Thermometer, ArrowRight,
+            Sun, Cloud, CloudRain, CloudLightning, Calendar
+        } from 'lucide-react';
+        import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+
+        // --- CONSTANTES GÉNOVA ---
+        const SHIP_DEPARTURE_TIME = "19:00";
+        const SHIP_ONBOARD_TIME = "18:30";
+        const DATE_OF_VISIT = "2026-04-14";
+
+        const COORDS = {
+            GENOVA_DOCK: { lat: 44.415087, lng: 8.919319 },
+            DE_FERRARI: { lat: 44.40716, lng: 8.934041 },
+            SAN_LORENZO: { lat: 44.40777, lng: 8.931048 },
+            GARIBALDI: { lat: 44.410708, lng: 8.934625 },
+            CASA_COLOMBO: { lat: 44.405624, lng: 8.935123 },
+            PORTA_SOPRANA: { lat: 44.405572, lng: 8.934445 },
+            PORTO_ANTICO: { lat: 44.409382, lng: 8.926857 }
+        };
+
+        const GPX_WAYPOINTS = [
+            { name: "Monumento a Cristóbal Colón", lat: 44.416812, lng: 8.922333 },
+            { name: "Museo del palacio real", lat: 44.414966, lng: 8.926153 },
+            { name: "Basilica SS Annunziata", lat: 44.413974, lng: 8.928365 },
+            { name: "Piazza della Nunziata", lat: 44.413775, lng: 8.928306 },
+            { name: "Via Cairoli", lat: 44.413196, lng: 8.929995 },
+            { name: "Basilica di San Siro", lat: 44.411797, lng: 8.929903 },
+            { name: "Palacio Grimaldi Meridiana", lat: 44.411696, lng: 8.931205 },
+            { name: "Palazzo Gio Carlo Brignole", lat: 44.41149, lng: 8.931393 },
+            { name: "Palazzo Podestà", lat: 44.411081, lng: 8.93321 },
+            { name: "Palazzo Doria Spinola", lat: 44.410906, lng: 8.933696 },
+            { name: "Via Garibaldi", lat: 44.410708, lng: 8.934625 },
+            { name: "Piazza De Ferrari", lat: 44.40716, lng: 8.934041 },
+            { name: "Casa de Cristóbal Colón", lat: 44.405624, lng: 8.935123 },
+            { name: "Porta Soprana", lat: 44.405572, lng: 8.934445 },
+            { name: "Iglesia de San Ambrosio", lat: 44.406793, lng: 8.933092 },
+            { name: "Palacio Ducal", lat: 44.407364, lng: 8.93289 },
+            { name: "Catedral de San Lorenzo", lat: 44.40777, lng: 8.931048 },
+            { name: "Fuente Barchile Di Ponticello", lat: 44.408959, lng: 8.931632 },
+            { name: "Loggia di Banchi", lat: 44.409112, lng: 8.929849 },
+            { name: "Galeón Pirata Neptune", lat: 44.411077, lng: 8.927414 }
+        ];
+
+        const GENOVA_TRACK = [
+            [44.414547, 8.91886], [44.414656, 8.918879], [44.415132, 8.918992], [44.415856, 8.91937], 
+            [44.416257, 8.919752], [44.416273, 8.919919], [44.416163, 8.920722], [44.416189, 8.920787], 
+            [44.41601, 8.921381], [44.416096, 8.921867], [44.416307, 8.922102], [44.416577, 8.922396], 
+            [44.416677, 8.922441], [44.416553, 8.922918], [44.416425, 8.923473], [44.415602, 8.925054], 
+            [44.415253, 8.925684], [44.414948, 8.926247], [44.414491, 8.927139], [44.414038, 8.928023], 
+            [44.413757, 8.927922], [44.413559, 8.928598], [44.413241, 8.929918], [44.412834, 8.930023], 
+            [44.412198, 8.930363], [44.411778, 8.929901], [44.412198, 8.930363], [44.411687, 8.931045], 
+            [44.411444, 8.931535], [44.411205, 8.932546], [44.411077, 8.933097], [44.41072, 8.934631], 
+            [44.410117, 8.935171], [44.408801, 8.934584], [44.408316, 8.934344], [44.407146, 8.933771], 
+            [44.407025, 8.933363], [44.4067, 8.933918], [44.406599, 8.93429], [44.405983, 8.934998], 
+            [44.405569, 8.934443], [44.40613, 8.933527], [44.406653, 8.93292], [44.407225, 8.931954], 
+            [44.407659, 8.930827], [44.408276, 8.931318], [44.40892, 8.931587], [44.409113, 8.930887], 
+            [44.409274, 8.929988], [44.409399, 8.929167], [44.409325, 8.927803], [44.409154, 8.92742], 
+            [44.410389, 8.927683], [44.411205, 8.927404], [44.412187, 8.926702], [44.412641, 8.926513], 
+            [44.413066, 8.926108], [44.41354, 8.924983], [44.414043, 8.924193], [44.41435, 8.923624], 
+            [44.415013, 8.922015], [44.415295, 8.920705], [44.415087, 8.919319], [44.414656, 8.918879]
+        ];
+
+        const INITIAL_ITINERARY = [
+          {
+            id: '01',
+            title: 'Terminal de Cruceros - Inicio',
+            startTime: '10:00',
+            endTime: '10:10',
+            locationName: 'Stazione Marittima (Ponte dei Mille)',
+            coords: { lat: 44.415087, lng: 8.919319 },
+            description: 'Punto de partida de nuestra expedición por "La Superba"[cite: 1].',
+            keyDetails: 'Asegúrate de llevar calzado cómodo para el empedrado genovés y agua[cite: 1].',
+            priceEUR: 0,
+            type: 'transport',
+            completed: false
+          },
+          {
+            id: '02',
+            title: 'Monumento a Cristóbal Colón',
+            startTime: '10:15',
+            endTime: '10:25',
+            locationName: 'Piazza Acquaverde',
+            coords: { lat: 44.416812, lng: 8.922333 },
+            description: 'Dato Histórico: Erigido en 1862, rinde homenaje al hijo más famoso de la ciudad frente a la estación de tren[cite: 2].',
+            keyDetails: 'Observa las cuatro estatuas en la base que representan la Piedad, la Ciencia, la Constancia y el Valor[cite: 2].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '03',
+            title: 'Fachada del Palacio Real',
+            startTime: '10:30',
+            endTime: '10:45',
+            locationName: 'Palazzo Reale (Exterior)',
+            coords: { lat: 44.414966, lng: 8.926153 },
+            description: 'Dato Histórico: Uno de los "Palazzi dei Rolli", residencia de los Saboya en Génova[cite: 3].',
+            keyDetails: 'Admira la imponente perspectiva barroca desde la Via Balbi[cite: 3].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '04',
+            title: 'Basílica de la Santísima Anunciada',
+            startTime: '10:50',
+            endTime: '11:15',
+            locationName: 'Basilica della Santissima Annunziata del Vastato',
+            coords: { lat: 44.413974, lng: 8.928365 },
+            description: 'Dato Histórico: Considerada por muchos como la iglesia más bella de Génova por su explosión de oro y frescos[cite: 4].',
+            keyDetails: 'La entrada es gratuita; no dejes de mirar la cúpula, una obra maestra del barroco[cite: 4, 5].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '05',
+            title: 'Plaza de la Anunciada',
+            startTime: '11:15',
+            endTime: '11:25',
+            locationName: 'Piazza della Nunziata',
+            coords: { lat: 44.413775, lng: 8.928306 },
+            description: 'Espacio abierto que sirve de umbral hacia el laberinto del casco antiguo[cite: 5].',
+            keyDetails: 'Busca los detalles de los edificios circundantes antes de entrar en Via Cairoli[cite: 5, 6].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '06',
+            title: 'Paseo por Via Cairoli',
+            startTime: '11:30',
+            endTime: '11:40',
+            locationName: 'Via Cairoli',
+            coords: { lat: 44.413196, lng: 8.929995 },
+            description: 'Dato Histórico: Antiguamente conocida como la "Strada Nuovissima", fue construida para conectar las zonas nobles[cite: 6].',
+            keyDetails: 'Fíjate en la elegancia de los portales de los palacios que la flanquean[cite: 6].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '07',
+            title: 'Basílica de San Siro',
+            startTime: '11:45',
+            endTime: '12:05',
+            locationName: 'Basilica di San Siro',
+            coords: { lat: 44.411797, lng: 8.929903 },
+            description: 'Dato Histórico: Fue la primera catedral de Génova en el siglo IV[cite: 7].',
+            keyDetails: 'Entra a ver su interior barroco; la leyenda dice que San Siro expulsó un basilisco del pozo de la plaza[cite: 7, 8].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '08',
+            title: 'Palacio de la Meridiana',
+            startTime: '12:10',
+            endTime: '12:20',
+            locationName: 'Palazzo Grimaldi Meridiana',
+            coords: { lat: 44.411696, lng: 8.931205 },
+            description: 'Dato Histórico: Llamado así por el gran reloj de sol (meridiana) que decora su fachada[cite: 8].',
+            keyDetails: 'Es uno de los palacios más altos y singulares del centro histórico[cite: 8, 9].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '09',
+            title: 'Palacio Gio Carlo Brignole',
+            startTime: '12:20',
+            endTime: '12:30',
+            locationName: 'Palazzo Gio Carlo Brignole',
+            coords: { lat: 44.41149, lng: 8.931393 },
+            description: 'Un ejemplo magnífico de la arquitectura aristocrática del siglo XVII[cite: 9].',
+            keyDetails: 'Observa los imponentes bustos y relieves sobre su entrada principal[cite: 9].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '10',
+            title: 'Palacio Podestà (Lomellino)',
+            startTime: '12:35',
+            endTime: '12:45',
+            locationName: 'Palazzo Podestà',
+            coords: { lat: 44.411081, lng: 8.93321 },
+            description: 'Dato Histórico: Destaca por su colorida fachada de estucos que narran victorias militares[cite: 10].',
+            keyDetails: 'Es un punto clave de la Via Garibaldi, Patrimonio de la Humanidad[cite: 10].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '11',
+            title: 'Palacio Doria Spinola',
+            startTime: '12:45',
+            endTime: '12:55',
+            locationName: 'Palazzo Doria (Gio Battista Spinola)',
+            coords: { lat: 44.410906, lng: 8.933696 },
+            description: 'Dato Histórico: Sede actual de la Prefectura, conserva un atrio y escalera monumentales[cite: 11].',
+            keyDetails: 'Echa un vistazo al patio interior (si está abierto el portal) para ver su estructura renacentista[cite: 11].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '12',
+            title: 'Final de Via Garibaldi',
+            startTime: '12:55',
+            endTime: '13:10',
+            locationName: 'Via Garibaldi y Palazzi dei Rolli',
+            coords: { lat: 44.410708, lng: 8.934625 },
+            description: 'Dato Histórico: Rubens quedó tan impresionado por esta calle que dibujó los palacios para que sirvieran de modelo en Amberes[cite: 12].',
+            keyDetails: 'Camina despacio; cada edificio aquí es un museo al aire libre[cite: 12, 13].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '13',
+            title: 'Plaza De Ferrari',
+            startTime: '13:20',
+            endTime: '13:40',
+            locationName: 'Piazza De Ferrari',
+            coords: { lat: 44.40716, lng: 8.934041 },
+            description: 'Dato Histórico: Es el corazón moderno de la ciudad, donde se encuentra la Ópera Carlo Felice[cite: 13].',
+            keyDetails: 'La gran fuente central es el lugar perfecto para una foto icónica[cite: 13, 14].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '14',
+            title: 'Casa de Cristóbal Colón',
+            startTime: '13:50',
+            endTime: '14:05',
+            locationName: 'Casa di Colombo',
+            coords: { lat: 44.405624, lng: 8.935123 },
+            description: 'Dato Histórico: Ruinas de la casa donde el navegante pasó su juventud entre 1455 y 1470[cite: 14].',
+            keyDetails: 'Justo al lado verás el Claustro de San Andrés, un rincón de paz medieval[cite: 14].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '15',
+            title: 'Porta Soprana',
+            startTime: '14:05',
+            endTime: '14:15',
+            locationName: 'Porta Soprana',
+            coords: { lat: 44.405572, lng: 8.934445 },
+            description: 'Dato Histórico: La puerta más importante de las murallas del siglo XII[cite: 15].',
+            keyDetails: 'Observa la altura de las torres, diseñadas para vigilar cualquier amenaza desde el mar[cite: 15].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '16',
+            title: 'Iglesia del Jesús (San Ambrosio)',
+            startTime: '14:20',
+            endTime: '14:40',
+            locationName: 'Chiesa del Gesù e dei Santi Ambrogio e Andrea',
+            coords: { lat: 44.406793, lng: 8.933092 },
+            description: 'Dato Histórico: Joya jesuita que alberga dos obras maestras de Rubens[cite: 16].',
+            keyDetails: 'Entrada gratuita. Imprescindible ver "La Circuncisión" de Rubens sobre el altar mayor[cite: 16, 17].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '17',
+            title: 'Palacio Ducal',
+            startTime: '14:45',
+            endTime: '15:05',
+            locationName: 'Palazzo Ducale',
+            coords: { lat: 44.407364, lng: 8.93289 },
+            description: 'Dato Histórico: Antiguo centro del poder de la República de Génova y residencia de los Dogos[cite: 17].',
+            keyDetails: 'Entra libremente a los grandes patios para sentir la escala monumental del edificio[cite: 17, 18].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '18',
+            title: 'Catedral de San Lorenzo',
+            startTime: '15:10',
+            endTime: '15:35',
+            locationName: 'Cattedrale di San Lorenzo',
+            coords: { lat: 44.40777, lng: 8.931048 },
+            description: 'Dato Histórico: Catedral gótica y románica famosa por su fachada de franjas blancas y negras[cite: 18].',
+            keyDetails: 'Busca la bomba de la II Guerra Mundial que cayó en la nave y no explotó[cite: 18, 19].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '19',
+            title: 'Fuente Barchile Di Ponticello',
+            startTime: '15:40',
+            endTime: '15:50',
+            locationName: 'Fontana Barchile Di Ponticello',
+            coords: { lat: 44.408959, lng: 8.931632 },
+            description: 'Fuente histórica del siglo XVII que formaba parte del antiguo barrio de Ponticello[cite: 19].',
+            keyDetails: 'Un punto tranquilo para observar la arquitectura de la zona antes del regreso[cite: 19, 20].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '20',
+            title: 'Loggia di Banchi',
+            startTime: '15:55',
+            endTime: '16:05',
+            locationName: 'Loggia della Mercanzia',
+            coords: { lat: 44.409112, lng: 8.929849 },
+            description: 'Dato Histórico: Antigua bolsa de valores y centro de comercio de especias y granos[cite: 20].',
+            keyDetails: 'Se encuentra en la Piazza Banchi, la plaza que conecta el centro con el puerto viejo[cite: 20].',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: 'pirate_ship',
+            title: 'Galeón Neptune (Barco Pirata)',
+            startTime: '16:10',
+            endTime: '16:25',
+            locationName: 'Porto Antico',
+            coords: { lat: 44.409382, lng: 8.926857 },
+            description: 'Impresionante réplica de un galeón español construida para el cine.',
+            keyDetails: 'Parada fotográfica en el muelle durante el regreso por el paseo marítimo.',
+            priceEUR: 0,
+            type: 'sightseeing',
+            completed: false
+          },
+          {
+            id: '21',
+            title: 'Terminal de Cruceros - Fin',
+            startTime: '16:30',
+            endTime: '16:45',
+            locationName: 'Regreso a Terminal de Cruceros',
+            coords: { lat: 44.415087, lng: 8.919319 },
+            description: 'Final del recorrido de 6 horas regresando por el paseo marítimo[cite: 21].',
+            keyDetails: 'Llegada con tiempo de sobra sobre la hora límite de embarque[cite: 21].',
+            priceEUR: 0,
+            type: 'transport',
+            completed: false
+          },
+          {
+            id: 'boarding_deadline',
+            title: 'HORA LÍMITE DE EMBARQUE',
+            startTime: '18:30',
+            endTime: '18:30',
+            locationName: 'Ponte dei Mille - Control Seguridad',
+            coords: { lat: 44.415087, lng: 8.919319 },
+            description: 'Todos a bordo ("All Aboard"). El acceso se cierra para la salida.',
+            keyDetails: 'Es imperativo estar a bordo antes de esta hora[cite: 21].',
+            priceEUR: 0,
+            type: 'transport',
+            completed: false,
+            notes: 'CRITICAL'
+          },
+          {
+            id: 'ship_departure',
+            title: 'SALIDA DEL BARCO',
+            startTime: '19:00',
+            endTime: '19:15',
+            locationName: 'Muelle de Salida',
+            coords: { lat: 44.415087, lng: 8.919319 },
+            description: 'Maniobra de zarpe del crucero hacia el siguiente destino.',
+            keyDetails: 'Disfruta de la salida de puerto desde las cubiertas superiores.',
+            priceEUR: 0,
+            type: 'transport',
+            completed: false
+          }
+        ];
+
+        const PRONUNCIATIONS = [
+            { word: 'Buongiorno', phonetic: "Bwon-jor-no", simplified: 'Bwon-yor-no', meaning: 'Buenos días' },
+            { word: 'Grazie', phonetic: "Grat-zye", simplified: 'Grat-sie', meaning: 'Gracias' },
+            { word: 'Prego', phonetic: "Pre-go", simplified: 'Pre-go', meaning: 'De nada' },
+            { word: 'Dov\'è il baño?', phonetic: "Do-ve il ba-nyo", simplified: 'Dové il baño', meaning: '¿Dónde está el baño?' }
+        ];
+
+        // --- UTILIDADES ---
+        const calculateDuration = (startStr, endStr) => {
+          const [startH, startM] = startStr.split(':').map(Number);
+          const [endH, endM] = endStr.split(':').map(Number);
+          let diffMins = (endH * 60 + endM) - (startH * 60 + startM);
+          if (diffMins < 0) diffMins += 24 * 60; 
+          const hours = Math.floor(diffMins / 60);
+          const minutes = diffMins % 60;
+          if (hours > 0 && minutes > 0) return `${hours}h ${minutes}m`;
+          if (hours > 0) return `${hours}h`;
+          return `${minutes} min`;
+        };
+
+        const calculateTimeProgress = (startTime, endTime) => {
+          const now = new Date();
+          const currentMinutes = now.getHours() * 60 + now.getMinutes();
+          const [startH, startM] = startTime.split(':').map(Number);
+          const startMinutes = startH * 60 + startM;
+          const [endH, endM] = endTime.split(':').map(Number);
+          const endMinutes = endH * 60 + endM;
+          if (currentMinutes < startMinutes) return 0;
+          if (currentMinutes >= endMinutes) return 100;
+          return Math.min(100, Math.max(0, ((currentMinutes - startMinutes) / (endMinutes - startMinutes)) * 100));
+        };
+
+        // --- COMPONENTES ---
+
+        const Timeline = ({ itinerary, onToggleComplete, onLocate }) => {
+          return (
+            <div className="pb-24 px-4 pt-4 max-w-lg mx-auto">
+              <div className="flex justify-between items-end mb-6">
+                <h2 className="text-2xl font-bold text-blue-900 uppercase tracking-tight">Ruta Génova</h2>
+                <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded-md border border-blue-100">En Vivo</span>
+              </div>
+              <div className="relative border-l-2 border-blue-100 ml-3 space-y-8">
+                {itinerary.map((act) => (
+                  <div key={act.id} className="mb-8 ml-6 relative">
+                    <div onClick={() => onToggleComplete(act.id)} className={`absolute -left-[31px] top-0 rounded-full bg-white border-2 cursor-pointer z-10 ${act.completed ? 'border-emerald-500 text-emerald-500 shadow-sm' : 'border-blue-700 text-blue-700 shadow-sm'}`}>
+                        {act.completed ? <CheckCircle2 size={24} /> : <Circle size={24} />}
+                    </div>
+                    <div className={`rounded-2xl border shadow-sm transition-all overflow-hidden bg-white ${act.notes === 'CRITICAL' ? 'border-rose-500 bg-rose-50' : act.completed ? 'opacity-70 border-emerald-500' : 'border-blue-50'}`}>
+                        <div className="w-full h-1.5 bg-blue-50 overflow-hidden"><div className={`h-full ${calculateTimeProgress(act.startTime, act.endTime) === 100 ? 'bg-slate-300' : 'bg-blue-800'}`} style={{ width: `${calculateTimeProgress(act.startTime, act.endTime)}%` }}></div></div>
+                        <div className="p-5">
+                            <div className="flex justify-between items-start mb-2">
+                                <div>
+                                    <div className="flex items-center space-x-2 mb-2">
+                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 uppercase tracking-tighter">{act.startTime} - {act.endTime}</span>
+                                        <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">{calculateDuration(act.startTime, act.endTime)}</span>
+                                    </div>
+                                    <h3 className="font-bold text-lg text-slate-800 leading-tight">{act.title}</h3>
+                                </div>
+                                {act.notes === 'CRITICAL' && <AlertTriangle className="text-rose-600 animate-pulse" size={20} />}
+                            </div>
+                            <div className="mb-3 text-sm text-slate-600 flex items-center flex-wrap gap-1"><MapPin size={14} className="mr-0.5 text-blue-700"/> {act.locationName}</div>
+                            <p className="text-sm text-slate-600 mb-4 whitespace-pre-line leading-relaxed">{act.description}</p>
+                            <div className="bg-blue-50/50 p-3 rounded-xl text-sm italic border-l-4 border-amber-600 mb-4 text-blue-900 font-medium">"{act.keyDetails}"</div>
+                            <div className="flex flex-wrap items-center gap-2 mt-3 pt-4 border-t border-slate-50">
+                                <button onClick={() => onLocate(act.coords)} className="flex items-center text-[10px] font-bold text-blue-900 bg-blue-50 px-3 py-2 rounded-xl border border-blue-100 shadow-sm active:bg-blue-100"><Navigation size={12} className="mr-1.5" /> UBICACIÓN</button>
+                                <button onClick={() => onToggleComplete(act.id)} className={`ml-auto px-3 py-2 rounded-xl text-[10px] font-bold uppercase transition-all ${act.completed ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-900 text-white'}`}>{act.completed ? 'Hecho' : 'Completar'}</button>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        };
+
+        const MapComponent = ({ activities, userLocation, focusedLocation }) => {
+            const mapContainerRef = useRef(null);
+            const mapInstanceRef = useRef(null);
+            const layersRef = useRef([]);
+
+            useEffect(() => {
+                if (!mapContainerRef.current || mapInstanceRef.current) return;
+                const map = L.map(mapContainerRef.current, { zoomControl: false }).setView([44.4107, 8.9328], 14);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
+                mapInstanceRef.current = map;
+                return () => { map.remove(); mapInstanceRef.current = null; };
+            }, []);
+
+            useEffect(() => {
+                const map = mapInstanceRef.current;
+                if (!map) return;
+                layersRef.current.forEach(layer => layer.remove());
+                layersRef.current = [];
+
+                activities.forEach(act => {
+                    const marker = L.marker([act.coords.lat, act.coords.lng]).addTo(map);
+                    marker.bindPopup(`<div style="padding:10px;"><h3 style="margin:0;font-size:14px;color:#1e3a8a;">${act.title}</h3><p style="margin:5px 0 0;font-size:11px;">${act.locationName}</p></div>`);
+                    layersRef.current.push(marker);
+                });
+
+                GPX_WAYPOINTS.forEach(wpt => {
+                    const circleMarker = L.circleMarker([wpt.lat, wpt.lng], {
+                        radius: 6, fillColor: "#BE123C", color: "#fff", weight: 2, opacity: 1, fillOpacity: 0.8
+                    }).addTo(map);
+                    circleMarker.bindPopup(`<div style="font-family: 'Roboto Condensed', sans-serif; font-size: 12px; font-weight: bold; color: #BE123C;">${wpt.name}</div>`);
+                    layersRef.current.push(circleMarker);
+                });
+
+                L.polyline(GENOVA_TRACK, { color: '#1e3a8a', weight: 4, opacity: 0.7, dashArray: '8, 12' }).addTo(map);
+                
+                if (userLocation) {
+                    const uMarker = L.circleMarker([userLocation.lat, userLocation.lng], { radius: 8, color: 'white', weight: 3, fillColor: '#3b82f6', fillOpacity: 1 }).addTo(map);
+                    layersRef.current.push(uMarker);
+                }
+            }, [activities, userLocation]);
+
+            useEffect(() => {
+                if (mapInstanceRef.current && focusedLocation) mapInstanceRef.current.flyTo([focusedLocation.lat, focusedLocation.lng], 16);
+            }, [focusedLocation]);
+
+            return <div ref={mapContainerRef} className="w-full h-full z-0" />;
+        };
+
+        const Guide = ({ userLocation }) => {
+            const [playing, setPlaying] = useState(null);
+            const [weather, setWeather] = useState(null);
+
+            useEffect(() => {
+                fetch('https://api.open-meteo.com/v1/forecast?latitude=44.41&longitude=8.92&hourly=temperature_2m,weathercode&timezone=Europe%2FRome')
+                    .then(r => r.json()).then(setWeather).catch(console.error);
+            }, []);
+
+            const play = (word) => {
+                const ut = new SpeechSynthesisUtterance(word);
+                ut.lang = 'it-IT';
+                ut.onend = () => setPlaying(null);
+                setPlaying(word);
+                window.speechSynthesis.speak(ut);
+            };
+
+            const handleSOS = () => {
+                const msg = `¡SOS! Necesito ayuda en Génova. Ubicación: ${userLocation ? `https://maps.google.com/?q=${userLocation.lat},${userLocation.lng}` : 'GPS no disponible'}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+            };
+
+            return (
+                <div className="pb-32 px-4 pt-6 max-w-lg mx-auto h-full overflow-y-auto no-scrollbar">
+                    <h2 className="text-2xl font-bold text-blue-900 mb-6 uppercase tracking-tight">Guía Superba</h2>
+                    
+                    <div className="mb-8 bg-rose-700 rounded-[2rem] p-6 shadow-xl text-white relative overflow-hidden">
+                        <div className="absolute top-[-20px] right-[-20px] w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                        <div className="relative z-10">
+                            <div className="flex items-center mb-3">
+                                <PhoneCall size={24} className="mr-3 animate-pulse" />
+                                <h3 className="font-black text-lg uppercase tracking-widest">ASISTENCIA SOS</h3>
+                            </div>
+                            <p className="text-xs text-rose-50 mb-6 leading-relaxed">Envía tu ubicación exacta por WhatsApp si te has desorientado en los caruggi.</p>
+                            <button onClick={handleSOS} className="w-full py-4 bg-white text-rose-700 font-black rounded-2xl text-sm uppercase tracking-widest shadow-lg active:scale-95 transition-transform">Enviar Localización</button>
+                        </div>
+                    </div>
+
+                    {weather && (
+                        <div className="mb-8 bg-white p-2 rounded-[2.5rem] border border-blue-50 shadow-lg">
+                            <div className="flex items-center gap-2 p-4 pb-0"><Thermometer size={20} className="text-blue-700"/><h3 className="text-sm font-bold uppercase tracking-widest text-slate-800">Clima Génova</h3></div>
+                            <div className="flex overflow-x-auto custom-h-scrollbar gap-3 px-6 py-4 items-stretch">
+                                {weather.hourly.time.slice(8, 20).map((time, i) => (
+                                    <div key={time} className="flex flex-col items-center min-w-[70px] p-3 bg-blue-50/50 rounded-3xl border border-blue-100">
+                                        <span className="text-[10px] font-black text-blue-400 mb-2">{new Date(time).getHours()}:00</span>
+                                        <span className="text-base font-black text-blue-900 tracking-tighter">{Math.round(weather.hourly.temperature_2m[i+8])}°</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center uppercase tracking-widest px-1">
+                        <Languages size={20} className="mr-2.5 text-blue-700"/> Italiano Básico
+                    </h3>
+                    <div className="bg-white rounded-3xl shadow-md border border-blue-50 overflow-hidden mb-12">
+                        {PRONUNCIATIONS.map((item, idx) => (
+                            <div key={idx} className="p-5 flex justify-between items-center border-b border-slate-50 last:border-0 hover:bg-blue-50/30 transition-colors group">
+                                <div>
+                                    <div className="flex items-center gap-3">
+                                        <p className="font-black text-blue-950 text-lg tracking-tight">{item.word}</p>
+                                        <button onClick={() => play(item.word)} className={`p-2 rounded-full transition-all ${playing === item.word ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-400'}`}>
+                                            <Volume2 size={16} className={playing === item.word ? 'animate-pulse' : ''} />
+                                        </button>
+                                    </div>
+                                    <p className="text-xs text-slate-500 italic mt-1 font-medium tracking-tight">"{item.simplified}"</p>
+                                </div>
+                                <div className="text-right ml-4">
+                                    <p className="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase border border-blue-100 tracking-tighter">{item.meaning}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [itinerary, setItinerary] = useState(INITIAL_ITINERARY);
+            const [activeTab, setActiveTab] = useState('timeline');
+            const [userLocation, setUserLocation] = useState(null);
+            const [mapFocus, setMapFocus] = useState(null);
+            const [countdown, setCountdown] = useState('--h --m --s');
+
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    const now = new Date();
+                    const [h, m] = SHIP_ONBOARD_TIME.split(':').map(Number);
+                    const target = new Date();
+                    target.setHours(h, m, 0, 0);
+                    const diff = target.getTime() - now.getTime();
+                    if (diff <= 0) setCountdown("¡A BORDO!");
+                    else {
+                        const hr = Math.floor(diff / 3600000);
+                        const mn = Math.floor((diff % 3600000) / 60000);
+                        const sc = Math.floor((diff % 60000) / 1000);
+                        setCountdown(`${hr.toString().padStart(2,'0')}h ${mn.toString().padStart(2,'0')}m ${sc.toString().padStart(2,'0')}s`);
+                    }
+                }, 1000);
+                if (navigator.geolocation) navigator.geolocation.watchPosition(pos => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }));
+                setTimeout(() => { const l = document.getElementById('initial-loader'); if(l) l.style.opacity = '0', setTimeout(() => l.remove(), 400); }, 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            return (
+                <div className="flex flex-col h-screen bg-slate-50 overflow-hidden">
+                    <header className="bg-blue-950 text-white p-4 shadow-xl z-20 flex justify-between items-center shrink-0 border-b border-white/5">
+                        <div className="flex items-center"><Anchor className="mr-3 text-amber-500" size={24} /><div><h1 className="font-black text-[10px] uppercase tracking-[0.2em] text-blue-300">Escala Génova</h1><p className="text-[12px] font-bold text-white/90 leading-tight">14 Abril 2026</p></div></div>
+                        <div className="text-right shrink-0">
+                            <span className="text-[8px] font-black uppercase text-amber-400 tracking-widest block mb-0.5">Límite Embarque</span>
+                            <div className="text-lg font-black font-mono text-white leading-none tracking-tighter">{countdown}</div>
+                        </div>
+                    </header>
+                    <main className="flex-1 relative overflow-hidden">
+                        {activeTab === 'timeline' && <div className="h-full overflow-y-auto no-scrollbar"><Timeline itinerary={itinerary} onToggleComplete={(id) => setItinerary(itinerary.map(a => a.id === id ? {...a, completed: !a.completed} : a))} onLocate={c => {setMapFocus(c); setActiveTab('map');}} /></div>}
+                        {activeTab === 'map' && <MapComponent activities={itinerary} userLocation={userLocation} focusedLocation={mapFocus} />}
+                        {activeTab === 'budget' && (
+                            <div className="p-8 text-center text-slate-400 h-full flex flex-col items-center justify-center">
+                                <Wallet size={48} className="mb-4 text-blue-100" />
+                                <p className="font-bold uppercase tracking-widest text-xs">Escala Gratuita</p>
+                                <p className="text-[10px] uppercase mt-1 opacity-60">Génova es accesible a pie</p>
+                            </div>
+                        )}
+                        {activeTab === 'guide' && <Guide userLocation={userLocation} />}
+                    </main>
+                    <nav className="bg-white border-t h-20 flex justify-around items-center px-2 pb-safe shrink-0 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-30">
+                        {[
+                          { id: 'timeline', icon: CalendarClock, label: 'Itinerario' },
+                          { id: 'map', icon: MapIcon, label: 'Mapa' },
+                          { id: 'budget', icon: Wallet, label: 'Gastos' },
+                          { id: 'guide', icon: BookOpen, label: 'Guía' }
+                        ].map(t => (
+                          <button key={t.id} onClick={() => setActiveTab(t.id)} className={`flex flex-col items-center w-full transition-all ${activeTab === t.id ? 'text-blue-900' : 'text-slate-300'}`}>
+                            <div className={`p-2 rounded-xl mb-1 ${activeTab === t.id ? 'bg-blue-50 shadow-sm' : ''}`}><t.icon size={22} /></div>
+                            <span className={`text-[9px] font-black uppercase tracking-[0.1em] ${activeTab === t.id ? 'opacity-100' : 'opacity-60'}`}>{t.label}</span>
+                          </button>
+                        ))}
+                    </nav>
+                </div>
+            );
+        };
+
+        createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
