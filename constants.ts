@@ -95,7 +95,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Observa las cuatro estatuas en la base que representan la Piedad, la Ciencia, la Constancia y el Valor.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "Monumento iniciado en 1846 e inaugurado en 1862. La estatua se levanta sobre un pedestal formado por cuatro bajorrelieves que representan su odisea al Nuevo Mundo. Los bajorrelieves representan el Congreso de Salamanca, el transporte de la Cruz al Nuevo Mundo, la relación con los soberanos de España y finalmente Colón encadenado. Junto a la estatua de Colón hay una estatua de la joven América a sus pies."
   },
   {
     id: '03',
@@ -108,7 +109,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Admira la imponente perspectiva barroca desde la Via Balbi.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "Palacio renacentista de la familia Balbi, que en el siglo XIX y principios del XX también estuvo en manos de la familia real. Desde 2006, junto con otros palacios renacentistas de Génova y Strada Nuove, está incluido en la lista de la UNESCO. Los interiores ricamente decorados con valiosas obras de arte, pinturas murales y artesanía artística están abiertos al público."
   },
   {
     id: '04',
@@ -121,7 +123,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'La entrada es gratuita; no dejes de mirar la cúpula, una obra maestra del barroco.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "Una iglesia construida en el siglo XVI para los franciscanos conventuales, adaptada a las nuevas exigencias litúrgicas después del Concilio de Trento creando una maravillosa decoración interior. Es una estructura de tres naves con crucero y cúpula sobre la intersección de las naves. El interior está dividido por columnas, y en las paredes y la bóveda hay enormes frescos barrocos y pinturas de gran formato."
   },
   {
     id: '05',
@@ -130,7 +133,7 @@ export const INITIAL_ITINERARY: Activity[] = [
     endTime: '11:25',
     locationName: 'Piazza della Nunziata',
     coords: { lat: 44.413775, lng: 8.928306 },
-    description: 'Espacio abierto que sirve de umbral hacia el laberinto del casco antiguo.',
+    description: 'Espacio abierto que sirve de un umbral hacia el laberinto del casco antiguo.',
     keyDetails: 'Busca los detalles de los edificios circundantes antes de entrar en Via Cairoli.',
     priceEUR: 0,
     type: 'sightseeing',
@@ -160,7 +163,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Entra a ver su interior barroco; la leyenda dice que San Siro expulsó un basilisco del pozo de la plaza.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "Cuando esta parte del antiguo centro de la ciudad de hoy solía ser el 'Burgus', es decir, el campo escasamente habitado, cerca de la playa y fuera de las murallas de la ciudad, había una iglesia aquí, dedicada a los Doce Apóstoles. Su nombre fue cambiado a San Siro durante el siglo VI, en honor a un venerable Obispo de Génova del siglo IV. San Siro fue la primera catedral de la ciudad. Según la tradición, este Santo está conectado con el milagro del basilisco, un monstruo que representa la plaga o quizás la herejía Aria. Aparentemente, cazó a la bestia fuera de su escondite en el fondo de un pozo y la mató. Este episodio se evoca en un bajorrelieve medieval en un pórtico opuesto al lado sur de la iglesia y por un fresco en el interior del ábside. Hoy en día, esta iglesia alberga algunas obras de arte muy importantes, que incluyen frescos, pinturas y estatuas en el más refinado estilo barroco genovés del siglo XVII. Entre ellos se encuentra el altar mayor de mármol negro y bronce, una obra maestra del siglo XVII de Pierre Puget. El luchador por la libertad Giuseppe Mazzini, cuya familia vivía cerca, se bautizó en esta iglesia el 23 de junio de 1805. La fachada neoclásica actual fue diseñada por el arquitecto Carlo Barabino en 1820. Otras iglesias también se han dedicado al santo obispo San Siro. , como San Siro di Struppa en el valle de Bisagno, donde nació el santo. San Siro di Struppa es una hermosa iglesia románica construida en el límite entre la ciudad y el campo."
   },
   {
     id: '08',
@@ -173,7 +177,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Es uno de los palacios más altos y singulares del centro histórico.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "Fue construido entre 1536 y 1544 por el banquero Genovés Gerolamo Grimaldi Oliva, enriquecido en Portugal y España donde gestionó la recaudación de impuestos en Córdoba y Granada. En el momento de la construcción se encontraba en un área poco urbanizada y de considerable pendiente, con acceso y frente principal en la subida de San Francesco di Castelletto, así como dos perspectivas laterales con vistas a los jardines aguas arriba y aguas abajo, muy elogiado por el arquitecto Joseph Fürttenbach. Los frescos de la fachada norte, aún visibles, que representan los trabajos de Hércules han sido atribuidos a Aurelio Busso. La decoración al Fresco de numerosas habitaciones interiores, por Luca Cambiaso, Giovanni Battista Castello, Lazzaro Calvi y otros se inició entre 1556 y 1566 bajo la comisión del Hijo de Gerolamo, Giovanni Battista Grimaldi, propietario de la famosa villa Grimaldi llamada la fortaleza en Sampierdarena. El edificio del siglo XVI, con el carácter dual de palacio urbano descentralizado y residencia de villa suburbana, conserva en su extraordinaria ambigüedad la génesis secreta de una renovación arquitectónica que pocos han denunciado hasta ahora con claridad en su ascendencia. La apertura de la nueva carretera (1778-1786, hoy via Cairoli), requeriremos la excavación del jardín inferior, y la reconstrucción de la fachada sur, con la adición a la obra de James Sharp de una pared cubierta coronada por una terraza y un reloj de sol pintado en la fachada, a la que el nombre actual del Palacio del reloj de sol. La fachada original del siglo XVI sigue siendo testimonio en la edición rubense de los palacios de Génova (1652). En el caso del Palazzo della meridiana Rubens decidió representar la fachada en el jardín, en lugar de la fachada principal, como es el caso de los otros palacios ilustrados, ya que la perspectiva en el ascenso de San Francesco es irregular debido a la pendiente del terreno. También esta perspectiva es variada en comparación con el siglo XVI original, que a la altura del balcón de mármol en la planta principal tenía en el centro un profundo hueco en correspondencia con el patio abierto de abajo. El aspecto actual se remonta a 1697, cuando la logia central cubría el primer patio convertido en un atrio cerrado. En general, el Palacio de hoy es muy diferente de la oroginale, que incluía 2 patios interiores, arcadas, y estaba rodeado de jardines, que se caracteriza por la alternancia de espacios abiertos y espacios cubiertos: el porche de entrada una especie de telescopio que toma en el pequeño jardín al oeste con un gran Ninfeo, juguetes de agua y autómatas a través de una sucesión de espacios justo rotos desde la perspectiva de los juegos de columnatas. En esta ocasión, además de los nuevos edificios en el área del jardín trasero, el patio se cubrió con una claraboya de vidrieras, en el Centro de la cual acamparon los símbolos de las ciudades de Roma, Venecia y Turín, y las decoraciones al temple de las bóvedas y varias habitaciones fueron hechas por el pintor Apuliano Nicola Mascialino, de impronta neorrenacentista, que también frescos de Luca Cambiaso (Ulises rayo el Proci, episodios de la Odisea, sátira burlada por el amor) y de Lazzaro Calvi (Apolo en el carro) Después de tres siglos de pertenecer a la familia Grimaldi Oliva, en 1835 Gio Agostino vendió el palacio a Paolo Sebastiano Odero. A principios del siglo XX, Evan Mackenzie, representante en Génova de Lloyd''s de Londres, encargó al arquitecto florentino Gino Coppedè adaptar el edificio a un edificio de oficinas. Cuando, en mayo de 1915, Italia entró en la guerra, la familia Mackenzie puso a disposición algunas habitaciones del Palazzo della Meridiana para ser transformadas en un hospital para oficiales Italianos. En el siglo pasado se ha utilizado varias veces como edificio público con las consiguientes particiones y renovaciones."
   },
   {
     id: '09',
@@ -186,7 +191,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Observa los imponentes bustos y relieves sobre su entrada principal.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "El palacio Gio Carlo Brignole fue construido por el arquitecto Bartolomeo Bianco a finales de los años 20 del siglo XVII por encargo de Giovan Battista Brignole frente a un edificio propiedad de los Grimaldi familia habitada en época por Gerolamo Grimaldi, con estos Giovan Battista Brignole estipuló un acuerdo para que el futuro edificio no superara en altura el Palazzo della Meridiana, nombre con el que se conoce esta residencia Grimaldi.Durante los años 70 del mismo siglo, Gio Carlo Brignole hijo de Giovanni Battista inicio de las primeras grandes reformas estéticas encargó una revisión arquitectónica a Pietro Antonio Corradi, y un ciclo escultórico al escultor genovés Filippo Parodi para dar magnificencia al portal de entrada. Este estaba y todavía está flanqueado por dos poderosos telamones como para proteger a quienes ingresan al palacio, sobre el arquitrabe había un par de Putti con el escudo de armas heráldico de la familia Brignole perdido hoy debido a cambios en toda la arquitectura del palacio. y al posterior cambio de propiedad en 1854.. a la familia Durazzo. Esta familia genovesa todavía es propietaria del edificio y encargó los frescos del vestíbulo de entrada al pintor Giuseppe Isola entre 1808 y 1893."
   },
   {
     id: '10',
@@ -199,7 +205,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Es un punto clave de la Via Garibaldi, Patrimonio de la Humanidad.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "El podestà era el máximo cargo civil del gobierno de las ciudades del centro y norte de la Italia medieval. Existen numerosos palacios denominados Palacio del Podestà (en italiano Palazzo del Podestà) y que, por tanto, hacen referencia a dicho cargo público. El Palacio Podestà de Genova fue construido entre 1559 y 1565 por Giovan Battista Castello llamado el 'Bergamasco' y por Bernardino Cantone a instancias de Nicolosio Lomellino, un exponente de una familia en pleno auge económico y político. Relacionado con el Príncipe Andrea Doria, acumuló un gran capital en la primera mitad del siglo XVI como Concesionario de la rentable pesca de coral en la isla Tunecina de Tabarca. A principios del siglo XVII la propiedad pasó a la familia Centurione que llevó a cabo una renovación interna, luego a los Pallavicini, Raggi y finalmente a Andrea Podestà, varias veces alcalde de Génova entre 1866 y 1895. La fachada, diseñada por Bérgamo, está animada por una rica decoración de estuco, con ermitaños femeninos alados, para sostener el marco de la planta baja; cintas y cortinas para sostener, en el primer piso, trofeos de armas; guirnaldas y máscaras para coronar las ventanas, con figuras clásicas dentro de medallones ovales. La antigua decoración de estuco, aplicada por primera vez en los tiempos modernos por Rafael en las logias Vaticanas y tempranamente importada a Génova por su alumno Perin del Vaga en la decoración de la villa del príncipe, se despliega aquí por primera vez a gran escala cubriendo todo el prospecto. Su ejecución se atribuye al Urbino Marcello Sparzo. Incluso en el aparato de estuco festivo del atrio Oval es evidente la intervención de diseño de Bérgamo, que fue capaz de introducir en Génova las sugerencias de la cultura manierista más actualizada."
   },
   {
     id: '11',
@@ -212,7 +219,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Echa un vistazo al patio interior (si está abierto el portal) para ver su estructura renacentista.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "El terreno donde se encuentra el palacio fue comprado en una subasta en 1551 por Constantino Gentile, quien lo vendió a un precio doble a los hermanos Giambattista y Andrea Spinola, quienes encargaron la construcción del palacio en 1563. En 1566, Andrea cedió su parte a Giambattista y la construcción continuó, De modo que en 1567 el palacio estaba casi terminado. En 1723 el palacio fue comprado por la familia Doria. Hasta 1968, se creía que Giovan Battista Castello era el arquitecto principal. En 1968, sin embargo, se documentó que Bernardino Cantone era el arquitecto y director de las obras, mientras que la chimenea en la planta principal y el patio interior fueron diseñados por Castello. El palacio sufrió considerables transformaciones entre los siglos XVII y XVIII, cuando se levantó una sola planta y se remodeló la fachada, tras los graves daños sufridos en el bombardeo por la flota francesa en 1684, la fachada. En esa ocasión, la fachada recibió la actual decoración de estuco, con pares de pilastras intercaladas con tableros de ventanas. En el atrio hay una gran linterna colgante coronada por el águila heráldica, emblema de la familia Doria. Desde aquí se llega al patio con columnas y luego al pequeño pero bonito jardín en la azotea. El interior tiene una rica decoración hecha en gran parte por la Bottega dei Semino. Los frescos en la bóveda de la Sala en el piso principal, reflejan la voluntad de celebración dinástica de la Spinola que representa los ambascerios de Oberto Spinola y Federico Barbarroja, y otros eventos relacionados con la familia. En una habitación Andrea y Ottavio Semino, representan los temas mitológicos habituales, como los amores de los dioses, preferidos por la clientela genovesa: Júpiter y Daphne, Neptuno y Proserpina, Venus y Adonis, Joven y Europa, 'Júpiter y Antiope'."
   },
   {
     id: '12',
@@ -225,7 +233,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Camina despacio; cada edificio aquí es un museo al aire libre.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "Una de las calles más importantes y largas del casco antiguo de Génova. Pertenece a la llamada Strade Nuove, es decir, nuevas calles, creadas a mediados del siglo XVI. Fueron diseñados para la ciudad en desarrollo y comenzaron a construirse de acuerdo con el plan impuesto desde arriba. Durante el siglo siguiente, se construyeron en la calle palacios y magníficas casas de vecindad de los comerciantes más ricos y la aristocracia. Hoy, todo el sitio de Strade Nuove está inscrito en la lista de la UNESCO."
   },
   {
     id: '13',
@@ -238,7 +247,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'La gran fuente central es el lugar perfecto para una foto icónica.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "La plaza principal de Génova, construida entre la parte antigua y la nueva de la ciudad. Sus edificios proceden principalmente de los siglos XVIII y XIX, cuando Génova era uno de los centros bancarios de Europa. Alrededor de la plaza, hay casas de vecindad y palacios eclécticos y eclécticos que son las sedes de bancos y otras instituciones financieras. En medio de la plaza hay una fuente a la que se le ha dado un aspecto moderno durante la reforma."
   },
   {
     id: '14',
@@ -251,7 +261,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Justo al lado verás el Claustro de San Andrés, un rincón de paz medieval.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "Se encuentra usted ante los restos de la que fue, según la tradición y sólidos documentos históricos, la casa familiar de Cristoforo Colombo. Aunque las piedras que ve hoy son una reconstrucción del siglo XVIII sobre los cimientos originales —tras el bombardeo francés de 1684—, este espacio marca el lugar exacto donde el joven Colón pasó su adolescencia. Imagine, por un momento, que el ruido de la ciudad moderna desaparece. Sustitúyalo por el sonido de los telares, el olor a lana húmeda y el bullicio de una de las potencias marítimas más grandes del mundo."
   },
   {
     id: '15',
@@ -264,7 +275,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Observa la altura de las torres, diseñadas para vigilar cualquier amenaza desde el mar.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "La más antigua de las puertas de Génova, construida a mediados del siglo XII dentro de los llamados muros de Barbarroja. Solo han sobrevivido pequeños fragmentos hasta el día de hoy. Es una estructura realizada en piedra labrada, con dos torres redondas a ambos lados de la entrada. Una pintura de St. Andrés por la proximidad del monasterio que le dedicó."
   },
   {
     id: '16',
@@ -277,7 +289,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Entrada gratuita. Imprescindible ver "La Circuncisión" de Rubens sobre el altar mayor.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "Nombre local: Chiesa dei Santi Ambrogio e Andrea. La iglesia barroca de los jesuitas, que data del siglo VI, debe su aspecto actual a la reconstrucción de la segunda mitad del siglo XVI, cuando recibió una fachada rematada con un tímpano y un magnífico interior. Sus decoraciones fueron realizadas por los artistas genoveses más importantes del período barroco. En las bóvedas y paredes, además de las decoraciones de estuco, se pueden ver frescos con escenas de la Biblia. También hay dos cuadros de Rubens en la iglesia."
   },
   {
     id: '17',
@@ -290,7 +303,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Entra libremente a los grandes patios para sentir la escala monumental del edificio.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "Desde el siglo XIV hasta principios del XIX, el palacio fue la sede de los dogos genoveses. El edificio original fue construido inmediatamente después del establecimiento de la república genovesa y fue reconstruido varias veces. Fue reconstruido en su forma neoclásica actual en 1775 después de un gran incendio. Los interiores están ricamente decorados con pinturas murales y decoraciones de estuco y hoy en día se celebran exposiciones aquí. En el pasado, hubo una prisión en la Torre Grimaldin, y su prisionero más famoso fue el violinista Nicolo Paganini."
   },
   {
     id: '18',
@@ -303,7 +317,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Busca la bomba de la II Guerra Mundial que cayó en la nave y no explotó.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "La catedral que es la sede del arzobispo de Génova y el símbolo de la ciudad. Se trata de un edificio fundamentalmente medieval, con algunos añadidos posteriores. Se construyó entre los siglos IX y XII, y en los siglos siguientes fue reconstruida y mejorada muchas veces. Entre otras cosas, el portal románico norte, el rosetón y el portal de entrada en estilo gótico francés, así como la capilla renacentista de St. Juan el Bautista, patrón de Génova. Hay un sarcófago del siglo XIII en el que, según tradición, los restos de St. Juan."
   },
   {
     id: '19',
@@ -316,7 +331,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Un punto tranquilo para observar la arquitectura de la zona antes del regreso.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "Era la barchile (una fuente con las boquillas del chorro de agua colocadas a una altura de más de 2 metros, para permitir llenar fácilmente los cántaros que las mujeres llevaban descansando sobre sus cabezas ...) de la ya desaparecida distrito de Ponticello, demolido para 'modernizar' una parte de Génova. Trasladado primero al Palacio Ducal y luego al Campetto, data de alrededor de 1642. Un trozo de Génova que ya no existe ..."
   },
   {
     id: '20',
@@ -329,7 +345,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Se encuentra en la Piazza Banchi, la plaza que conecta el centro con el puerto viejo.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "Nombre local: Loggia della Mercanzia. Edificio de la bolsa renacentista erigido en el siglo XVI en el centro comercial de Génova. Es un edificio de planta rectangular, cubierto con bóveda de cúpula, con altos ventanales semicirculares. El interior consta de una gran sala, que solía ser puestos de venta. En la pared hay un fresco que representa a la Virgen y el Niño rodeados por St. Juan el Bautista y St. Jorge."
   },
   {
     id: 'pirate_ship',
@@ -342,7 +359,8 @@ export const INITIAL_ITINERARY: Activity[] = [
     keyDetails: 'Parada fotográfica en el muelle durante el regreso por el paseo marítimo.',
     priceEUR: 0,
     type: 'sightseeing',
-    completed: false
+    completed: false,
+    audioGuideText: "El Neptune es una réplica de barco de un galeón español del siglo XVII diseñado por el arquitecto naval David Cannell de www.dmcmarine.com. El barco fue construido en 1985 para la película Piratas de Roman Polanski, donde interpretó al barco español del mismo nombre. Una réplica fiel por encima de la línea de flotación, pero con un casco parcialmente de acero, tablones de madera y dos motores principales con propulsión Schottel, el Neptune es actualmente una atracción turística en el puerto de Génova, cuyo interior se puede visitar por una entrada de 9 euros. . En 2011, interpretó al Jolly Roger, el barco del Capitán Garfio, en la miniserie de televisión Neverland."
   },
   {
     id: '21',
