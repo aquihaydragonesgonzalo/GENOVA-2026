@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { PRONUNCIATIONS } from '../constants';
 import { 
   Volume2, Thermometer, PhoneCall, Send, Languages, 
-  Sun, Cloud, CloudRain, CloudLightning, Wind
+  Sun, Cloud, CloudRain, CloudLightning, Wind, Activity as ActivityIcon, Clock, Footprints
 } from 'lucide-react';
 import { Coordinates } from '../types';
 
@@ -73,9 +74,64 @@ const Guide: React.FC<GuideProps> = ({ userLocation }) => {
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
 
+  // Datos del resumen de la visita
+  const visitSummary = {
+    totalWindow: "10h 30min", // De 08:00 a 18:30
+    sightseeingTime: "6h 30min", // De 10:00 a 16:30
+    logisticsTime: "4h 00min", // Tiempo de desembarque, embarque y buffer
+    estimatedDistance: "6.2 km",
+    stepsApprox: "~8.500",
+    poiCount: 21,
+    accessibility: "100% Peatonal"
+  };
+
   return (
     <div className="pb-32 px-4 pt-6 max-w-lg mx-auto h-full overflow-y-auto no-scrollbar">
       <h2 className="text-2xl font-bold text-blue-900 mb-6 uppercase tracking-tight">Guía Génova</h2>
+
+      {/* Resumen de la Visita */}
+      <div className="mb-8 bg-white rounded-[2rem] border border-blue-50 shadow-md p-6 overflow-hidden relative">
+        <div className="flex items-center gap-2 mb-4">
+          <ActivityIcon size={18} className="text-blue-700" />
+          <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest">Resumen de la Visita</h3>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-y-5 gap-x-4">
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-1">Escala Total</span>
+            <div className="flex items-center gap-1.5">
+              <Clock size={14} className="text-blue-600" />
+              <span className="text-sm font-black text-blue-950">{visitSummary.totalWindow}</span>
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-1">Turismo Activo</span>
+            <div className="flex items-center gap-1.5">
+              <Sun size={14} className="text-amber-500" />
+              <span className="text-sm font-black text-blue-950">{visitSummary.sightseeingTime}</span>
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-1">Distancia a pie</span>
+            <div className="flex items-center gap-1.5">
+              <ActivityIcon size={14} className="text-emerald-600" />
+              <span className="text-sm font-black text-blue-950">{visitSummary.estimatedDistance}</span>
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-1">Pasos aprox.</span>
+            <div className="flex items-center gap-1.5">
+              <Footprints size={14} className="text-slate-600" />
+              <span className="text-sm font-black text-blue-950">{visitSummary.stepsApprox}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 pt-4 border-t border-slate-50 flex justify-between items-center text-[9px] font-bold uppercase text-slate-500">
+          <span>{visitSummary.poiCount} Puntos de Interés</span>
+          <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-100">{visitSummary.accessibility}</span>
+        </div>
+      </div>
 
       {/* SOS Section */}
       <div className="mb-8 bg-rose-700 rounded-[2rem] p-6 shadow-xl text-white relative overflow-hidden border-2 border-white/10">
