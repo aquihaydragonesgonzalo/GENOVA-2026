@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { PRONUNCIATIONS } from '../constants';
 import { 
   Volume2, Thermometer, PhoneCall, Send, Languages, 
-  Sun, Cloud, CloudRain, CloudLightning, Wind, Activity as ActivityIcon, Clock, Footprints
+  Sun, Cloud, CloudRain, CloudLightning, Wind, Activity as ActivityIcon, Clock, Footprints, CalendarDays
 } from 'lucide-react';
 import { Coordinates } from '../types';
 
@@ -17,6 +17,12 @@ interface WeatherData {
     temperature: number[];
     code: number[];
   };
+  daily: {
+    time: string[];
+    weathercode: number[];
+    temperature_2m_max: number[];
+    temperature_2m_min: number[];
+  };
 }
 
 const Guide: React.FC<GuideProps> = ({ userLocation }) => {
@@ -28,7 +34,7 @@ const Guide: React.FC<GuideProps> = ({ userLocation }) => {
     const fetchWeather = async () => {
       try {
         const response = await fetch(
-          'https://api.open-meteo.com/v1/forecast?latitude=44.41&longitude=8.92&hourly=temperature_2m,weathercode&timezone=Europe%2FRome'
+          'https://api.open-meteo.com/v1/forecast?latitude=44.41&longitude=8.92&hourly=temperature_2m,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Europe%2FRome'
         );
         const data = await response.json();
         setWeather({
@@ -36,6 +42,12 @@ const Guide: React.FC<GuideProps> = ({ userLocation }) => {
             time: data.hourly.time,
             temperature: data.hourly.temperature_2m,
             code: data.hourly.weathercode
+          },
+          daily: {
+            time: data.daily.time,
+            weathercode: data.daily.weathercode,
+            temperature_2m_max: data.daily.temperature_2m_max,
+            temperature_2m_min: data.daily.temperature_2m_min
           }
         });
       } catch (error) {
@@ -72,6 +84,11 @@ const Guide: React.FC<GuideProps> = ({ userLocation }) => {
       ? `¡SOS! Necesito ayuda en Génova. Mi ubicación actual es: https://maps.google.com/?q=${userLocation.lat},${userLocation.lng}`
       : `¡SOS! Necesito ayuda en Génova. No puedo obtener mi ubicación GPS.`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return new Intl.DateTimeFormat('es-ES', { weekday: 'short', day: 'numeric' }).format(date);
   };
 
   // Datos del resumen de la visita
@@ -155,24 +172,51 @@ const Guide: React.FC<GuideProps> = ({ userLocation }) => {
         <h3 className="text-sm font-black text-slate-800 mb-4 flex items-center uppercase tracking-widest px-1">
           <Thermometer size={18} className="mr-2 text-blue-900"/> Tiempo en "La Superba"
         </h3>
+        
         {loadingWeather ? (
           <div className="h-24 bg-white rounded-3xl animate-pulse border border-blue-50"></div>
         ) : (
-          <div className="bg-white p-2 pb-5 rounded-[2.5rem] border border-blue-50 shadow-xl overflow-hidden">
-            <div className="flex overflow-x-auto gap-3 px-6 py-4 no-scrollbar">
-              {weather?.hourly.time.map((time, i) => {
-                const hour = new Date(time).getHours();
-                if (hour >= 8 && hour <= 20) return (
-                  <div key={time} className="flex flex-col items-center justify-between min-w-[70px] p-3 bg-blue-50/50 rounded-3xl border border-blue-100">
-                    <span className="text-[10px] font-black text-blue-400 mb-2">{hour}:00</span>
-                    <div className="p-2 bg-white rounded-2xl mb-2 shadow-sm">{getWeatherIcon(weather.hourly.code[i], 24)}</div>
-                    <span className="text-sm font-black text-blue-900">{Math.round(weather.hourly.temperature[i])}°</span>
-                  </div>
-                );
-                return null;
-              })}
+          <>
+            {/* Hourly Forecast */}
+            <div className="bg-white p-2 pb-5 rounded-[2.5rem] border border-blue-50 shadow-xl overflow-hidden mb-4">
+              <h4 className="text-[10px] font-black text-blue-300 uppercase tracking-widest text-center mt-2 mb-2">Hoy</h4>
+              <div className="flex overflow-x-auto gap-3 px-6 py-2 no-scrollbar">
+                {weather?.hourly.time.map((time, i) => {
+                  const hour = new Date(time).getHours();
+                  if (hour >= 8 && hour <= 20) return (
+                    <div key={time} className="flex flex-col items-center justify-between min-w-[70px] p-3 bg-blue-50/50 rounded-3xl border border-blue-100">
+                      <span className="text-[10px] font-black text-blue-400 mb-2">{hour}:00</span>
+                      <div className="p-2 bg-white rounded-2xl mb-2 shadow-sm">{getWeatherIcon(weather.hourly.code[i], 24)}</div>
+                      <span className="text-sm font-black text-blue-900">{Math.round(weather.hourly.temperature[i])}°</span>
+                    </div>
+                  );
+                  return null;
+                })}
+              </div>
             </div>
-          </div>
+
+            {/* 5 Day Forecast */}
+            <div className="bg-white rounded-[2rem] border border-blue-50 shadow-lg p-5">
+              <div className="flex items-center gap-2 mb-4 px-1">
+                <CalendarDays size={16} className="text-blue-500" />
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Próximos 5 días</span>
+              </div>
+              <div className="space-y-1">
+                {weather?.daily.time.slice(0, 5).map((day, i) => (
+                  <div key={day} className="flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-colors">
+                    <span className="w-16 text-xs font-bold text-slate-600 capitalize">{formatDate(day)}</span>
+                    <div className="flex items-center gap-3">
+                      {getWeatherIcon(weather.daily.weathercode[i], 18)}
+                    </div>
+                    <div className="flex items-center gap-3 w-20 justify-end">
+                      <span className="text-xs font-bold text-slate-800">{Math.round(weather.daily.temperature_2m_max[i])}°</span>
+                      <span className="text-xs font-medium text-slate-400">{Math.round(weather.daily.temperature_2m_min[i])}°</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
         )}
       </div>
 
