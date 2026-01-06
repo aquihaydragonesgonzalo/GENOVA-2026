@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Activity } from '../types';
 import { ROMAN_WALK_TRACK, GPX_WAYPOINTS } from '../constants';
@@ -46,9 +47,15 @@ const MapComponent: React.FC<MapProps> = ({ activities, userLocation, focusedLoc
     activities.forEach(act => {
       const marker = L.marker([act.coords.lat, act.coords.lng], { icon: defaultIcon }).addTo(map);
       marker.bindPopup(`
-        <div style="padding: 10px; font-family: 'Roboto Condensed', sans-serif;">
-          <h3 style="margin: 0; font-weight: bold; color: #1e3a8a;">${act.title}</h3>
-          <p style="margin: 4px 0 0 0; font-size: 11px; color: #64748b;">${act.locationName}</p>
+        <div style="padding: 10px; font-family: 'Roboto Condensed', sans-serif; max-width: 200px;">
+          <h3 style="margin: 0 0 4px 0; font-weight: bold; color: #1e3a8a; font-size: 14px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;">${act.title}</h3>
+          <p style="margin: 6px 0; font-size: 11px; color: #1e3a8a; font-weight: bold;">${act.locationName}</p>
+          <p style="margin: 0 0 10px 0; font-size: 11px; color: #64748b; line-height: 1.4;">${act.description}</p>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=${act.coords.lat},${act.coords.lng}" 
+             target="_blank" 
+             style="display: block; background: #1e3a8a; color: white; text-align: center; padding: 8px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 10px; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+             INDICACIONES (Google Maps)
+          </a>
         </div>
       `);
       layersRef.current.push(marker);
